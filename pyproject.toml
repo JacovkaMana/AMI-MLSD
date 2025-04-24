@@ -18,25 +18,25 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = [
-    "E", # pycodestyle (error)
-    "F", # pyflakes
-    "B", # bugbear
-    "B9",
-    "C4", # flake8-comprehensions
-    "SIM", # flake8-simplify
-    "I", # isort
-    "UP", # pyupgrade
-    "PIE", # flake8-pie
-    "PGH", # pygrep-hooks
-    "PYI", # flake8-pyi
-    "RUF",
+    "E",  # pycodestyle (error) - проверка на соответствие стилю кода PEP 8
+    "F",  # pyflakes - обнаружение логических ошибок без запуска кода
+    "B",  # bugbear - обнаружение потенциальных ошибок и антипаттернов
+    "B9", # дополнительные проверки bugbear
+    "C4", # flake8-comprehensions - улучшение списковых включений и генераторов
+    "SIM", # flake8-simplify - упрощение кода
+    "I",  # isort - сортировка импортов
+    "UP", # pyupgrade - обновление синтаксиса до новых версий Python
+    "PIE", # flake8-pie - различные улучшения кода
+    "PGH", # pygrep-hooks - проверки на основе регулярных выражений
+    "PYI", # flake8-pyi - проверки для файлов типизации (.pyi)
+    "RUF", # правила специфичные для Ruff
 ]
 
 ignore = [
-    "B011",
-    "E501"
+    "B011", # не проверять использование assert - иногда это необходимо
+    "E501"  # игнорировать ошибки длины строки - форматирование решим другими средствами
 ]
