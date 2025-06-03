@@ -54,6 +54,7 @@ venv.bak/
 saves/
 logs/
 models/
+data/data
 *.db 
 
 poetry.lock
