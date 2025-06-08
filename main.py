@@ -8,7 +8,7 @@ from multi_agent_system.storyteller import Storyteller
 from multi_agent_system.supervisor import Supervisor
 
 
-def main():
+def run(query):
 
     logger.info("Starting...")
     # Create supervisor instance
@@ -21,15 +21,16 @@ def main():
     supervisor.define_agent(TownAgent)
     # The Storyteller is used for final output synthesis
 
-    # Handle a sample query
-    query = (
-        "Create a fantasy world with a medieval kingdom, a forest, and a mountain range"
-    )
     result = supervisor.handle_query(query)
 
     logger.info("Final Result:")
     logger.info(result)
 
+    return result
+
 
 if __name__ == "__main__":
-    main()
+    logger.disable(None)
+    run(
+        "Create a fantasy world with a medieval kingdom, a forest, and a mountain range"
+    )

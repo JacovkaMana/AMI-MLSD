@@ -76,7 +76,6 @@ class Supervisor:
     def get_agent_class(self, agent_name: str) -> type:
         """Get the agent class based on the agent name."""
         for agent_class in self.defined_agents.keys():
-            print(agent_class.lower(), agent_name.replace(" ", "").lower())
             if agent_class.lower() == agent_name.replace(" ", "").lower():
                 return self.defined_agents[agent_class]
         return None

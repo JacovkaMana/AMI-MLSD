@@ -16,6 +16,7 @@ class LLM:
         tool_manager: Tool_Manager = None,
         model_name: str = "mistral-large-latest",
         response_format: str = None,
+        temperature: float = None,
     ) -> None:
         self.tool_manager = tool_manager
         self.url = "https://api.mistral.ai/v1/chat/completions"
@@ -35,6 +36,10 @@ class LLM:
             # "presence_penalty": 0.2,
             # "frequency_penalty": 0.3,
         }
+
+        if temperature:
+            self.params["temperature"] = temperature
+
         self.system_prompt = system_prompt
         self.response_format = response_format
 
