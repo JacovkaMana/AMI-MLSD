@@ -14,15 +14,25 @@ from multi_agent_system.supervisor import Supervisor
 
 
 def run(query):
-    logger.info("Starting...")
+    logger.info("Starting adventure generation...")
     supervisor = Supervisor()
+
+    logger.info("Initializing world agent...")
     supervisor.define_agent(WorldAgent)
+
+    logger.info("Initializing locations agent...")
     supervisor.define_agent(LocationsAgent)
+
+    logger.info("Initializing character agent...")
     supervisor.define_agent(CharacterAgent)
+
+    logger.info("Initializing town agent...")
     supervisor.define_agent(TownAgent)
+
+    logger.info("Processing query...")
     result = supervisor.handle_query(query)
-    logger.info("Model Result:")
-    logger.info(result)
+
+    logger.info("Generation complete!")
     return result
 
 
