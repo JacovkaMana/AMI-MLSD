@@ -14,7 +14,8 @@ class Storyteller:
 
         logger.info(f"{self.name} executing user query : {query}")
         llm = LLM(
-            model_name="mistral-large-latest", system_prompt=STORYTELLER_SYSTEM_PROMPT
+            model_name="qwen/qwen3-32b-04-28:free",
+            system_prompt=STORYTELLER_SYSTEM_PROMPT,
         )
         prompt = f"Agent Responses:\n{agent_responses}\n\nUser Query: '{query}'"
         response = llm.complete(prompt)

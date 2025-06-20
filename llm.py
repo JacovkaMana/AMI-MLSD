@@ -19,15 +19,20 @@ class LLM:
         temperature: float = None,
     ) -> None:
         self.tool_manager = tool_manager
-        self.url = "https://api.mistral.ai/v1/chat/completions"
-
         load_dotenv()
-        MISTRAL_API_KEY = os.environ.get("MISTRAL_KEY")
+
+        if "mistral" in model_name.lower():
+            self.url = "https://api.mistral.ai/v1/chat/completions"
+            api_key = os.environ.get("MISTRAL_KEY")
+        else:
+            self.url = "https://openrouter.ai/api/v1/chat/completions"
+            api_key = os.environ.get("OPENROUTER_KEY")
 
         self.headers = {
-            "Authorization": f"Bearer {MISTRAL_API_KEY}",
+            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         }
+
         self.params = {
             "model": model_name,
             "temperature": 0.7,

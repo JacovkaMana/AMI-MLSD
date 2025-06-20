@@ -3,50 +3,100 @@ from loguru import logger
 import os
 from dotenv import load_dotenv
 import json
+from datetime import datetime
+from pathlib import Path
+from rouge_judge import RougeLJudge
 
 load_dotenv()
 
 
-class LLMJudge:
-    def __init__(self):
+class BaseJudge:
+    def __init__(self, metric_name, system_prompt):
+        self.metric_name = metric_name
         self.llm = LLM(
             temperature=0.2,
             response_format="json_object",
-            system_prompt="""
-You are an evaluation assistant. 
-Your task is to evaluate the relevance and creativity of a given response to a query. 
-For relevance, provide a numerical score from 1 to 100, where 1 is low relevance and 100 is high relevance and an explanation. 
-For creativity, provide a brief explanation.""",
+            system_prompt=system_prompt,
+            model_name="mistral-small-latest",
         )
 
     def evaluate(self, query, result):
-        relevance_prompt = f"""
-Given the query: '{query}', evaluate the relevance of the result: '{result}'. 
-Provide a numerical score from 1 to 100, where 1 is low relevance and 100 is high relevance and an explanation.
-Return json 
-
+        prompt = f"""
+Given the query: '{query}', evaluate the {self.metric_name} of: '{result}'.
+Provide a numerical score (1-100) and explanation.
+Return json format:
 {{
-    'score' : int
-    'explanation' : str
+    'score': int,
+    'explanation': str
 }}"""
-        relevance_response = json.loads(self.llm.complete(relevance_prompt))
-        creativity_prompt = f"""
-Given the query: '{query}', evaluate the creativity of the result: '{result}'. 
-Provide a numerical score from 1 to 100, where 1 is low creativity and 100 is high creativity and an explanation.
-Return json 
 
-{{
-    'score' : int
-    'explanation' : str
-}}"""
-        creativity_response = json.loads(self.llm.complete(creativity_prompt))
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                response = self.llm.complete(prompt)
+                return json.loads(response)
+            except json.JSONDecodeError as e:
+                logger.warning(
+                    f"Attempt {attempt + 1} failed to parse JSON response: {e}"
+                )
+                if attempt == max_retries - 1:
+                    raise ValueError(
+                        f"Failed to get valid JSON after {max_retries} attempts"
+                    )
+                continue
 
-        return relevance_response, creativity_response
+
+class RelevanceJudge(BaseJudge):
+    def __init__(self):
+        super().__init__(
+            "relevance", "Evaluate how well the response matches the query (1-100)."
+        )
+
+
+class CreativityJudge(BaseJudge):
+    def __init__(self):
+        super().__init__("creativity", "Evaluate originality and novelty (1-100).")
+
+
+class CompletenessJudge(BaseJudge):
+    def __init__(self):
+        super().__init__("completeness", "Evaluate coverage of key aspects (1-100).")
+
+
+class EngagementJudge(BaseJudge):
+    def __init__(self):
+        super().__init__("engagement", "Evaluate how compelling/interesting (1-100).")
+
+
+class ClarityJudge(BaseJudge):
+    def __init__(self):
+        super().__init__("clarity", "Evaluate how clear and understandable (1-100).")
+
+
+class Evaluator:
+    def __init__(self):
+        self.judges = {
+            "relevance": RelevanceJudge(),
+            "creativity": CreativityJudge(),
+            "completeness": CompletenessJudge(),
+            "engagement": EngagementJudge(),
+            "clarity": ClarityJudge(),
+            "rouge_l": RougeLJudge(),
+        }
+
+    def evaluate(self, query, result, reference_dataset=None):
+        evaluations = {}
+        for name, judge in self.judges.items():
+            if name == "rouge_l":
+                evaluation = judge.evaluate(query, result, reference_dataset)
+            else:
+                evaluation = judge.evaluate(query, result)
+            evaluations[name] = evaluation
+        return evaluations
 
 
 if __name__ == "__main__":
-    query = "Create a fantasy world..."
-    result = "A medieval kingdom with forests and mountains."
-    judge = LLMJudge()
-    evaluation = judge.evaluate(query, result)
-    logger.info(f"Evaluation: {evaluation}")
+    # Simple test case
+    evaluator = Evaluator()
+    test_eval = evaluator.evaluate("Test query", "Test result")
+    logger.info(f"Test evaluation: {test_eval}")
