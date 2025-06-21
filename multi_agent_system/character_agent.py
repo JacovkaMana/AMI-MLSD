@@ -6,7 +6,6 @@ from tools.donjon import Character_Tool
 
 
 class CharacterAgent(BaseAgent):
-
     def __init__(self):
         self.name = "Character Agent"
         self.description = "Generates character descriptions based on given tasks."

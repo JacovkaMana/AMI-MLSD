@@ -6,7 +6,6 @@ from tools.donjon import Town_Tool
 
 
 class TownAgent(BaseAgent):
-
     def __init__(self):
         self.name = "Town Agent"
         self.description = "Generates town descriptions based on given tasks."
