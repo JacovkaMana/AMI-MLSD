@@ -20,7 +20,9 @@ class Supervisor:
     def handle_query(self, query: str) -> str:
         """Process a user query by calling defined agents and synthesizing their responses."""
         if not self.defined_agents:
-            return "Error: No agents defined. Please define at least one agent using define_agent()."
+            # If no agents are defined, pass the query directly to the storyteller
+            storyteller = Storyteller()
+            return storyteller.generate_output("", query)
 
         agent_descriptions = "\n".join(
             [
