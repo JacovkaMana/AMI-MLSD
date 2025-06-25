@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 
 
 class LLM_Tool:
-
     def __init__(self) -> None:
         pass
 
@@ -19,7 +18,6 @@ class LLM_Tool:
 
 
 class World_Tool(LLM_Tool):
-
     def __init__(self) -> None:
         self.name = "random_world"
         self.description = "Инструмент для генерации случайных Миров"
@@ -34,7 +32,6 @@ class World_Tool(LLM_Tool):
 
 
 class Locations_Tool(LLM_Tool):
-
     def __init__(self) -> None:
         self.name = "random_location"
         self.description = "Инструмент для генерации случайных Локаций"
@@ -49,7 +46,6 @@ class Locations_Tool(LLM_Tool):
 
 
 class Character_Tool(LLM_Tool):
-
     def __init__(self) -> None:
         self.name = "random_character"
         self.description = "Инструмент для генерации случайных Персонажей"
@@ -64,7 +60,6 @@ class Character_Tool(LLM_Tool):
 
 
 class Town_Tool(LLM_Tool):
-
     def __init__(self) -> None:
         self.name = "random_town"
         self.description = "Инструмент для генерации случайных Городов"
@@ -79,7 +74,6 @@ class Town_Tool(LLM_Tool):
 
 
 class Adventure_Tool(LLM_Tool):
-
     def __init__(self) -> None:
         self.name = "random_adventure"
         self.description = "Инструмент для генерации случайных Приключений"

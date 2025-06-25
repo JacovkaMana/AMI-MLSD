@@ -6,7 +6,6 @@ from tools.donjon import Locations_Tool
 
 
 class LocationsAgent(BaseAgent):
-
     def __init__(self):
         self.name = "Locations Agent"
         self.description = "Generates location descriptions based on given tasks."

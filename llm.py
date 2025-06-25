@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 
 
 class LLM:
-
     def __init__(
         self,
         system_prompt: str,
@@ -58,7 +57,6 @@ class LLM:
         ]
 
     def complete(self, prompt: str, messages=None):
-
         params = self.params.copy()
 
         if self.response_format:

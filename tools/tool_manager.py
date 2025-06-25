@@ -1,7 +1,5 @@
 class Tool_Manager:
-
     def __init__(self, tools: list = []) -> None:
-
         self.tools = tools
 
         self.tool_schema = [
@@ -29,7 +27,6 @@ class Tool_Manager:
         self.tool_dict = {x.get_name(): x for x in self.tools}
 
     def fetch_tool_data(self, tool_name, count=1):
-
         return self.tool_dict[tool_name].call(count)
 
     def supervisor_decide(self, query):

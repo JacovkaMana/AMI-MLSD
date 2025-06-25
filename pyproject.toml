@@ -15,7 +15,9 @@ dependencies = [
     "beautifulsoup4 (>=4.13.4,<5.0.0)",
     "loguru (>=0.7.3,<0.8.0)",
     "python-dotenv (>=1.1.0,<2.0.0)",
-    "arize-phoenix (>=10.13.1,<11.0.0)"
+    "arize-phoenix (>=10.13.1,<11.0.0)",
+    "gradio (>=5.34.2,<6.0.0)",
+    "locust (>=2.37.10,<3.0.0)"
 ]
 
 
