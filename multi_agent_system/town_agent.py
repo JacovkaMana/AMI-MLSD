@@ -11,7 +11,7 @@ class TownAgent(BaseAgent):
         self.description = "Generates town descriptions based on given tasks."
         self.town_tool = Town_Tool()
 
-    def execute_task(self, task: str) -> str:
+    async def execute_task(self, task: str) -> str:
         logger.info(f"{self.name} executing task: {task}")
         llm = LLM(model_name="mistral-small-latest", system_prompt=TOWN_AGENT_PROMPT)
 
@@ -23,5 +23,5 @@ class TownAgent(BaseAgent):
         Reference Data:
         {reference}
         """
-        response = llm.complete(prompt)
+        response = await llm.complete(prompt)
         return f"**{self.name}**: {response}"

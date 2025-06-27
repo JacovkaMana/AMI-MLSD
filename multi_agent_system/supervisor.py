@@ -1,6 +1,7 @@
 # multi_agent_system/supervisor.py
 
 import json
+import asyncio
 from typing import List, Dict, Any
 from .storyteller import Storyteller
 from .base_agent import BaseAgent
@@ -17,7 +18,7 @@ class Supervisor:
         """Define an agent to be used by the supervisor."""
         self.defined_agents[agent_class.__name__] = agent_class()
 
-    def handle_query(self, query: str) -> str:
+    async def handle_query(self, query: str) -> str:
         """Process a user query by calling defined agents and synthesizing their responses."""
         if not self.defined_agents:
             # If no agents are defined, pass the query directly to the storyteller
@@ -41,7 +42,7 @@ class Supervisor:
         )
 
         logger.info(f"Deciding which tasks to create")
-        task_definition = llm.complete(task_definition_prompt)
+        task_definition = await llm.complete(task_definition_prompt)
         logger.info(f"Task definition: {task_definition}")
 
         tasks = json.loads(task_definition)
@@ -53,26 +54,24 @@ class Supervisor:
             logger.error(f"Invalid task definition: {tasks}")
             raise ValueError("Invalid task definition")
 
-        results = []
-
         logger.info(f"Running Agents")
+        tasks_to_execute = []
         for agent_name, task in tasks.items():
             agent = self.get_agent_class(agent_name)
-
             if isinstance(task, list):
                 for sub_task in task:
-                    response = agent.execute_task(sub_task)
-                    results.append(response)
-            if isinstance(task, str):
-                response = agent.execute_task(task)
-                results.append(response)
+                    tasks_to_execute.append(agent.execute_task(sub_task))
+            elif isinstance(task, str):
+                tasks_to_execute.append(agent.execute_task(task))
+
+        results = await asyncio.gather(*tasks_to_execute)
 
         logger.info(f"Results: {'\n'.join(x[:300] for x in results)}")
         results = "\n\n\n".join(results)
 
         logger.info(f"Synthesizing response")
         storyteller = Storyteller()
-        full_response = storyteller.generate_output(results, query)
+        full_response = await storyteller.generate_output(results, query)
         return full_response
 
     def get_agent_class(self, agent_name: str) -> type:

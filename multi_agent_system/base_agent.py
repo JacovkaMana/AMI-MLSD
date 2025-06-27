@@ -3,6 +3,6 @@ from loguru import logger
 
 
 class BaseAgent:
-    def execute_task(self, task: str) -> str:
+    async def execute_task(self, task: str) -> str:
         """Base method for agents to execute a task. Must be overridden in subclasses."""
         raise NotImplementedError("Subclasses must implement execute_task method")

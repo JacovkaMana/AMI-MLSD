@@ -2,9 +2,10 @@ import gradio as gr
 from main import run
 from loguru import logger
 import sys
+import asyncio
 
 
-def process_query(query, progress=gr.Progress()):
+async def process_query(query, progress=gr.Progress()):
     try:
         log_messages = []
         # Clear status by returning empty string
@@ -22,7 +23,7 @@ def process_query(query, progress=gr.Progress()):
         logger.remove()  # Remove default handler
         logger.add(handle_log, format="{message}")
 
-        output = run(query)
+        output = await run(query)
 
         # Return both the output and the collected logs
         return output, "\n".join(log_messages)
@@ -93,8 +94,11 @@ with gr.Blocks(
     }
     """
 
+    def sync_process_query(*args):
+        return asyncio.run(process_query(*args))
+
     run_btn.click(
-        fn=process_query,
+        fn=sync_process_query,
         inputs=query_input,
         outputs=[output, status],
         show_progress="minimal",
@@ -102,4 +106,4 @@ with gr.Blocks(
     save_btn.click(fn=save_result, inputs=output, outputs=status)
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(share=False, debug=False, server_name="0.0.0.0")

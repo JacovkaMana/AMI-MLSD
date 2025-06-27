@@ -11,7 +11,7 @@ class CharacterAgent(BaseAgent):
         self.description = "Generates character descriptions based on given tasks."
         self.character_tool = Character_Tool()
 
-    def execute_task(self, task: str) -> str:
+    async def execute_task(self, task: str) -> str:
         logger.info(f"{self.name} executing task: {task}")
         llm = LLM(
             model_name="mistral-small-latest", system_prompt=CHARACTER_AGENT_PROMPT
@@ -25,5 +25,5 @@ class CharacterAgent(BaseAgent):
         Reference Data:
         {reference}
         """
-        response = llm.complete(prompt)
+        response = await llm.complete(prompt)
         return f"**{self.name}**: {response}"

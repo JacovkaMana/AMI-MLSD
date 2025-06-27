@@ -1,6 +1,6 @@
 from loguru import logger
-
-import requests
+import asyncio
+import aiohttp
 from tools import ToolManager, Tool_Manager
 from prompts.main import SYSTEM_PROMPT
 import json
@@ -56,7 +56,7 @@ class LLM:
             {"role": "user", "content": f"{prompt}"},
         ]
 
-    def complete(self, prompt: str, messages=None):
+    async def complete(self, prompt: str, messages=None):
         params = self.params.copy()
 
         if self.response_format:
@@ -73,11 +73,12 @@ class LLM:
         params["messages"] = messages
 
         logger.info(f"Query to the {self.url}")
-        response = requests.post(
-            self.url, headers=self.headers, json=params, timeout=120
-        )
-
-        result = response.json()
+        await asyncio.sleep(3)  # Rate limiting
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                self.url, headers=self.headers, json=params, timeout=120
+            ) as response:
+                result = await response.json()
 
         choice = result.get("choices", [{}])[0]
         message = choice.get("message", {})
